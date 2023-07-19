@@ -1,0 +1,13 @@
+{% extends "paperCapsule/base.html"%}
+{% block content %}
+
+    {% if searched %}
+    <p>you search for {{ searched }}</p>
+    <br>
+    {% for article in articles %}
+    {{ article }} - {{ article.date_posted}} <br>
+    {% endfor %}
+    {% else %}
+        <h1>you forgot to search for an article</h1>
+    {% endif %}
+{% endblock content%}

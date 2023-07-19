@@ -1,0 +1,23 @@
+{% extends "paperCapsule/base.html"%}
+{% block content %}
+{% for article in articles%}
+    <article class="media content-section">
+        <div class="media-body">
+        <div class="article-metadata">
+            <a class="mr-2" href="#">{{ article.author }}</a>
+            <small class="text-muted">{{ article.date_posted }}</small>
+        </div>
+        <h2><a class="article-title" href="{% url 'article-detail' article.id %}">{{ article.title }}</a></h2>
+        <p class="article-content">{{ article.content }}</p>
+        
+        {% if user in article.saves.all %}
+        <a href="{% url 'article-save' article.id %}">UnSave</a>
+        {% else %}
+            <a href="{% url 'article-save' article.id %}">Save</a>
+        {% endif %}
+
+
+        </div>
+    </article>
+{% endfor %}
+{% endblock content%}

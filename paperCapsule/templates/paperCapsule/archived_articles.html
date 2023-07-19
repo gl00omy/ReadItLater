@@ -1,0 +1,23 @@
+{% extends "paperCapsule/base.html"%}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Archived Articles</title>
+</head>
+<body>
+    <h1>Archived Articles by {{ user.username }}</h1>
+    <ul>
+        {% for article in articles %}
+            <li>{{ article.title }} - {{ article.author }}</li>
+            <form action="{% url 'article_unarchive' article.pk %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Unarchive</button>
+              </form>
+        {% empty %}
+            <li>No liked articles found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+{% endblock content%}
