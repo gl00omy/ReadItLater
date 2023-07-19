@@ -1,5 +1,38 @@
-{% extends "paperCapsule/base.html"%}
+{% extends "paperCapsule/base.html" %}
 {% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Your styles go here */
+        .article-content {
+            /* Default styles for the article content */
+        }
+
+        .article-content.dark-mode {
+            /* Styles for the dark mode */
+            background-color: black;
+            color: white;
+        }
+
+        .article-content.light-mode {
+            /* Styles for the light mode */
+            background-color: white;
+            color: black;
+        }
+
+        .article-content.sepia-mode {
+            /* Styles for the sepia mode */
+            background-color: #f4ecd8;
+            color: #704214;
+        }
+    </style>
+</head>
+<body>
+    
     <article class="media content-section">
         <div class="media-body">
         <div class="article-metadata">
@@ -7,6 +40,18 @@
             <small class="text-muted">{{ object.date_posted }}</small>
         </div>
         <h2 class="article-title">{{ object.title }}</h2>
+
+        <!-- Add the following buttons for text size adjustment -->
+        <button onclick="adjustTextSize(1)">Increase Text Size</button>
+        <button onclick="adjustTextSize(-1)">Decrease Text Size</button>
+
+        <!-- Add the following buttons for color mode change -->
+        <button onclick="changeColorMode('dark-mode')">Dark Mode</button>
+<button onclick="changeColorMode('light-mode')">Light Mode</button>
+<button onclick="changeColorMode('sepia-mode')">Sepia Mode</button>
+
+
+
         <p class="article-content">{{ object.content }}</p>
 
         <ul>
@@ -17,4 +62,41 @@
         
         </div>
     </article>
+
+    <script>
+        function adjustTextSize(change) {
+            const articleContent = document.querySelector('.article-content');
+            const currentSize = parseInt(window.getComputedStyle(articleContent).fontSize, 10);
+            const newSize = currentSize + change;
+            articleContent.style.fontSize = newSize + 'px';
+        }
+
+        function changeColorMode(mode) {
+            console.log('Changing color mode:', mode);
+    const articleContent = document.querySelector('.article-content');
+    articleContent.className = 'article-content ' + mode;
+  }
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 {% endblock content%}
