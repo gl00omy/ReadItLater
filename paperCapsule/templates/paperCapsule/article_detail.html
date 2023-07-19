@@ -8,9 +8,7 @@
     <title>Document</title>
     <style>
         /* Your styles go here */
-        .article-content {
-            /* Default styles for the article content */
-        }
+       
 
         .article-content.dark-mode {
             /* Styles for the dark mode */
@@ -50,7 +48,7 @@
 <button onclick="changeColorMode('light-mode')">Light Mode</button>
 <button onclick="changeColorMode('sepia-mode')">Sepia Mode</button>
 
-
+<p>Estimated Reading Time: {{ estimated_reading_time }} minutes</p>
 
         <p class="article-content">{{ object.content }}</p>
 

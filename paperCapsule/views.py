@@ -7,7 +7,9 @@ from . models import Article
 from taggit.models import Tag
 from . forms import TagForm
 from django.contrib.auth.decorators import login_required
+import math
 
+AVERAGE_READING_SPEED = 200
 
 def home(request):
     context = {
@@ -23,6 +25,24 @@ class ArticleListView(ListView):
 
 class ArticleDetailView(DetailView):
     model = Article
+    template_name = 'paperCapsule/article_detail.html'
+    context_object_name = 'article'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        article = context['article']
+
+        # Calculate the estimated reading time based on the article's content
+        estimated_reading_time = self.calculate_reading_time(article.content)
+        context['estimated_reading_time'] = estimated_reading_time
+
+        return context
+
+    @staticmethod
+    def calculate_reading_time(text):
+        words = len(text.split())
+        minutes = math.ceil(words / AVERAGE_READING_SPEED)
+        return minutes
 
 @login_required
 def article_favorite(request, pk):
@@ -141,3 +161,5 @@ def add_tag_to_article(request, article_id):
             article.tags.add(tag_name)
 
     return render(request, 'paperCapsule/add_tag.html', {'article': article})
+
+
