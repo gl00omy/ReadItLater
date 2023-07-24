@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+
+{% block content %}
+    <h1>Favorite Articles</h1>
+    {% if favorites %}
+        <ul>
+            {% for favorite in favorites %}
+                <li><a href="{% url 'article_detail' article_id=favorite.article.id %}">{{ favorite.article.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You haven't favorited any articles yet.</p>
+    {% endif %}
+{% endblock %}

@@ -12,8 +12,16 @@ import math
 AVERAGE_READING_SPEED = 200
 
 def home(request):
+    articles = Article.objects.all().order_by('-date_posted')
+    last_three_articles = articles.exclude(saves__in=[request.user])[:3]
+    saved_articles = articles.filter(saves=request.user)
+    
+    
     context = {
-        'articles': Article.objects.all()
+        'articles': articles,
+        'last_three_articles': last_three_articles,
+        'saved_articles': saved_articles,
+       
     }
     return render(request, 'paperCapsule/home.html', context)
 

@@ -1,0 +1,130 @@
+{% extends 'main.html' %}
+{% block content %}
+<style>
+    .home-container{
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+    }
+</style>
+<div class="home-container">
+    <div>
+        <h3>Home</h3>
+        <h3>Saves</h3>
+        <hr>
+        <h3>Filters</h3>
+        <h3>Archive</h3>
+        <h3>Favorites</h3>
+        <h3>Highlights</h3>
+        <hr>
+        <h3>Tags</h3>
+        <H3>All tags</H3>
+    </div>
+    <div>
+        <div class="row">
+            <div class="col">
+                <div class="card card-body">
+                    <form method="get">
+                        {{ myFilter.form }}
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div>
+                {% for article in articles%}
+                    <div>
+                            {% if user.is_authenticated %}
+
+                            
+                            <form method="POST" action="{% url 'save_article' article.id %}">
+                                {% csrf_token %}
+                                <button type="submit">Save this article</button>
+                              </form>
+
+
+                              <a href="{% url 'saved_articles' %}">View your saved articles</a>
+                            {% else %}
+                            <a href="{% url 'login' %}">Log in to save this article</a>
+                            {% endif %}
+
+                            {% if is_saved %}
+                            <form action="{% url 'unsave_article' article.id %}" method="POST">
+                                {% csrf_token %}
+                                    <button type="submit">Unsave</button>
+                             </form>
+                            {% else %}
+                            <form action="{% url 'save_article' article.id %}" method="POST">
+                                {% csrf_token %}
+                                <a href="{% url 'save_article' article.id %}" id="save-button" data-article-id="{{ article.id }}">
+                                    Save
+                                  </a>
+                            </form>
+                            {% endif %}
+
+                           
+                               
+                                <a href="{% url 'archived_articles' %}">View your archived articles</a>
+                          
+                            
+                              {% if article.archived %}
+                              <button type="button" class="btn btn-secondary" disabled>Archived</button>
+                            {% else %}
+                              <form action="{% url 'archive_article' id=article.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Archive</button>
+                              </form>
+                               {% endif %}
+                         
+
+                            <form method="post" action="{% url 'favorite_article' article.id %}">
+                                {% csrf_token %}
+                                <button type="submit">Favorite</button>
+                            </form>
+                           
+                            
+                        <h5>{{article.id}} -- <a href="{% url 'article' article.id %}">{{article.title}}</a></h5>
+                        <button class="btn btn-primary" onclick="enableReadingMode({{ article.id }})">Read in reading mode</button>
+                    </div>
+                    
+                {% endfor%}
+            </div>
+        </div>
+        <hr>
+    </div>
+</div>
+
+<script>
+    function enableReadingMode(articleId) {
+      window.location.href = "/reading_mode/" + articleId + "/";
+    }
+
+    // Get the save button element
+    const saveButton = document.getElementById('save-button');
+
+    // Get the article id from the data-article-id attribute
+    const articleId = saveButton.dataset.articleId;
+
+    // Check if the article is already saved
+    if ("{{ article.is_saved|yesno:"1,0" }}") {
+      // Update the button text to "unsave"
+      //saveButton.innerText = 'Unsave';
+
+      // Update the button link to the unsave url
+      //saveButton.href = `{% url 'unsave_article' article.id %}`;
+    }
+
+    // Add a click event listener to the save button
+    saveButton.addEventListener('click', () => {
+      // Toggle the button text between "save" and "unsave"
+      if (saveButton.innerText === 'Save') {
+        saveButton.innerText = 'Unsave';
+        saveButton.href = `{% url 'unsave_article' article.id %}`;
+      } else {
+        saveButton.innerText = 'Save';
+        saveButton.href = `{% url 'save_article' article.id %}`;
+      }
+    });
+</script>
+
+{% endblock %}

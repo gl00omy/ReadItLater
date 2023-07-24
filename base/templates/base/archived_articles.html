@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+
+{% block content %}
+  <h1>Archived Articles</h1>
+  {% for archived_article in archived_articles %}
+    
+    <li>
+      <h2>{{ archived_article.article.title }}</h2>
+      
+    </li>
+  {% empty %}
+    <p>You haven't archived any articles yet.</p>
+  {% endfor %}
+{% endblock %}
+
+

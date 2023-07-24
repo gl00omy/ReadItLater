@@ -12,7 +12,16 @@ class Article(models.Model):
     favorites = models.ManyToManyField(User, related_name="favorite_article", blank=True)
     saves = models.ManyToManyField(User, related_name="save_article", blank=True)
     archived = models.ManyToManyField(User, related_name="archived_article", blank=True)
+    is_archived = models.BooleanField(default=False)
     highlights = models.TextField(blank=True, null=True)
     
     def __str__(self):
         return self.title
+    
+    def archive(self):
+        self.is_archived = True
+        self.save()
+
+    def unarchive(self):
+        self.is_archived = False
+        self.save()

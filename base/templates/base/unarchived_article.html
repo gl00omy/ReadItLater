@@ -1,0 +1,12 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h1>Unarchive Article?</h1>
+<p>Are you sure you want to remove "{{ article.title }}" from your archived articles?</p>
+
+<form action="{% url 'unarchived_article' article.id %}" method="post">
+  {% csrf_token %}
+  <button type="submit">Yes</button>
+  <a href="{% url 'archived_articles' %}">No, go back</a>
+</form>
+{% endblock %}

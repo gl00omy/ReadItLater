@@ -1,0 +1,42 @@
+{% extends 'main.html' %}
+
+{% block content %}
+  <div class="reading-mode">
+    <h1>{{ article.title }}</h1>
+    <div id="article-content">
+      {{ article.content }}
+    </div>
+  </div>
+  {% if user.is_authenticated %}
+    <form method="post" action="{% url 'favorite_article' article_id=article.id %}">
+        {% csrf_token %}
+        {% if user.favorite_articles.filter(article=article).exists %}
+            <button type="submit" class="btn btn-danger">Remove from favorites</button>
+        {% else %}
+            <button type="submit" class="btn btn-success">Add to favorites</button>
+        {% endif %}
+    </form>
+{% endif %}
+{% endblock %}
+
+{% block js %}
+  <script src="{% static 'js/reading-mode.js' %}"></script>
+
+  <div class="toggle-switch">
+    <input type="checkbox" id="toggle">
+    <label for="toggle"></label>
+  </div>
+  
+  <script>
+    const toggle = document.getElementById('toggle');
+    toggle.addEventListener('change', () => {
+      if (toggle.checked) {
+        window.location.href = "{% url 'article_detail' article.pk %}?mode=reading";
+      } else {
+        window.location.href = "{% url 'article_detail' article.pk %}";
+      }
+    });
+  </script>
+
+
+{% endblock %}

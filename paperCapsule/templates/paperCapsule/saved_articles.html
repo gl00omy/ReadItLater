@@ -9,32 +9,62 @@
 </head>
 <body>
     <h1>Saved Articles by {{ user.username }}</h1>
-    <ul>
-        {% for article in articles %}
-            <li>{{ article.title }} - {{ article.author }}</li>
-            {% if user in article.saves.all %}
-            <a href="{% url 'article-save' article.id %}">UnSave</a>
-            {% else %}
-                <a href="{% url 'article-save' article.id %}">Save</a>
-            {% endif %}
-            {% if user in article.favorites.all %}
-            <a href="{% url 'article-favorite' article.id %}">UnFav</a>
-            {% else %}
-                <a href="{% url 'article-favorite' article.id %}">Fav</a>
-            {% endif %}
 
-            {% if user in article.archived.all %}
-            <a href="{% url 'article_archive' article.id %}">Unarchive</a>
-            {% else %}
-                <a href="{% url 'article_archive' article.id %}">Archive</a>
-            {% endif %}
+    <div class="row">
+        <div class="col-md-2">
             
-            <a href="{% url 'add_tag' article.id %}">Add Tag</a>
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-light"><a href="{% url 'paperCapsule-home' %}">Home</a></li>
+                        {% if user.is_authenticated %}
+                        <li class="list-group-item list-group-item-light"><a href="{% url 'saved_articles' user.id %}">Saves</a></li>
+                        <br>
+                        <p>Filters</p>
+                        <li class="list-group-item list-group-item-light"><a href="{% url 'archived_articles' user.id %}">Archived</a></li>
+                        <li class="list-group-item list-group-item-light"><a href="{% url 'favorited_articles' user.id %}">Favorite</a></li>
+                        
+                        
+                        <br>
+                        <p>Tags</p>
+                        <li class="list-group-item list-group-item-light">All tags</li>
+                        {% endif %}
+                    </ul>
+           
+        </div>
+        <div class="col-md-10">
+            <ul>
+                {% for article in articles %}
+                    <li>{{ article.title }} - {{ article.author }}</li>
+                    {% if user in article.saves.all %}
+                    <a href="{% url 'article-save' article.id %}">UnSave</a>
+                    {% else %}
+                        <a href="{% url 'article-save' article.id %}">Save</a>
+                    {% endif %}
+                    {% if user in article.favorites.all %}
+                    <a href="{% url 'article-favorite' article.id %}">UnFav</a>
+                    {% else %}
+                        <a href="{% url 'article-favorite' article.id %}">Fav</a>
+                    {% endif %}
+        
+                    {% if user in article.archived.all %}
+                    <a href="{% url 'article_archive' article.id %}">Unarchive</a>
+                    {% else %}
+                        <a href="{% url 'article_archive' article.id %}">Archive</a>
+                    {% endif %}
+                    
+                    <a href="{% url 'add_tag' article.id %}">Add Tag</a>
+        
+                {% empty %}
+                    <li>No Saved articles found.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 
-        {% empty %}
-            <li>No Saved articles found.</li>
-        {% endfor %}
-    </ul>
+
+
+
+    
+    
 </body>
 
 </html>

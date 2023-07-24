@@ -1,0 +1,17 @@
+{% extends 'main.html' %}
+{% block content %}
+<h2>{{ article.title }}</h2>
+{% if request.user.is_authenticated %}
+    {% if is_saved %}
+        <form action="{% url 'unsave_article' article.id %}" method="POST">
+            {% csrf_token %}
+            <button type="submit">Unsave</button>
+        </form>
+    {% else %}
+        <form action="{% url 'save_article' article.id %}" method="POST">
+            {% csrf_token %}
+            <button type="submit">Save</button>
+        </form>
+    {% endif %}
+{% endif %}
+{% endblock %}

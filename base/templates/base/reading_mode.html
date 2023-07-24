@@ -1,0 +1,60 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<style>
+    .highlighted {
+  background-color: yellow;
+  color: black;
+  border-radius: 2px;
+}
+</style>
+
+<div class="reading-mode">
+    <h1>{{ article.title }}</h1>
+    <p>{{ article.author }}</p>
+    <div class="article-content">
+      {{ article.content }}
+    </div>
+  </div>
+
+  <script>
+    function create_highlight() {
+  const selection = window.getSelection();
+  const range = selection.getRangeAt(0);
+  const text = range.toString().trim();
+
+  if (text) {
+    const highlight = new Highlight({
+      article: '{{ article.id }}',
+      user: '{{ request.user.id }}',
+      content: text,
+      start_index: range.startOffset,
+      end_index: range.endOffset
+    });
+
+    highlight.save().then(() => {
+      range.surroundContents(document.createElement('span'));
+      const highlights = document.querySelectorAll('.highlight');
+      const last_highlight = highlights[highlights.length - 1];
+      last_highlight.classList.add('highlighted');
+    }).catch(error => {
+      console.error(error);
+    });
+  }
+}
+
+  </script>
+
+{% if user.is_authenticated %}
+<form method="post" action="{% url 'favorite_article' article_id=article.id %}">
+    {% csrf_token %}
+    {% if user.favorite_articles.filter(article=article).exists %}
+        <button type="submit" class="btn btn-danger">Remove from favorites</button>
+    {% else %}
+        <button type="submit" class="btn btn-success">Add to favorites</button>
+    {% endif %}
+</form>
+{% endif %}
+
+<p>check</p>
+{% endblock %}

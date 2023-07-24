@@ -1,24 +1,56 @@
-{% extends "paperCapsule/base.html"%}
+{% extends "paperCapsule/base.html" %}
 {% block content %}
-{% for article in articles%}
 
-    <article class="media content-section">
-        <div class="media-body">
-        <div class="article-metadata">
-            <a class="mr-2" href="#">{{ article.author }}</a>
-            <small class="text-muted">{{ article.date_posted }}</small>
-        </div>
-        <h2><a class="article-title" href="{% url 'article-detail' article.id %}">{{ article.title }}</a></h2>
-        <p class="article-content">{{ article.content }}</p>
-        
-        {% if user in article.saves.all %}
-        <a href="{% url 'article-save' article.id %}">UnSave</a>
-        {% else %}
-            <a href="{% url 'article-save' article.id %}">Save</a>
+<style>
+    /* Custom CSS for same height cards */
+    .media.content-section {
+        height: 100%;
+    }
+    .media-body {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .article-metadata {
+        margin-bottom: auto;
+    }
+    .article-content {
+        max-height: 150px; /* Set the desired maximum height for the article content */
+        overflow: hidden;
+    }
+    .article-title {
+  margin-top: 0;
+}
+</style>
+
+<p>Welcome to Paper Capsule, {{ user.username }}</p>
+<h2>For You</h2>
+<p>Recommended for your interests</p>
+<div class="row">
+    {% for article in articles %}
+        {% if not user.is_authenticated or user not in article.saves.all %}
+            <div class="col-md-4">
+                <article class="media content-section">
+                    <div class="media-body">
+                        <div class="article-metadata">
+                            <a class="mr-2" href="#">{{ article.author }}</a>
+                        </div>
+                        <h3><a class="article-title" href="{% url 'article-detail' article.id %}">{{ article.title }}</a></h3>
+                        
+                        <p class="article-content">{{ article.content }}</p>
+                        <!-- The 'article-content' class will be used for styling the content and controlling its height. -->
+                        
+                        {% if user in article.saves.all %}
+                            <a href="{% url 'article-save' article.id %}">UnSave</a>
+                        {% else %}
+                            <a href="{% url 'article-save' article.id %}">Save</a>
+                        {% endif %}
+                        
+                    </div>
+                </article>
+            </div>
         {% endif %}
+    {% endfor %}
+</div>
 
-
-        </div>
-    </article>
-{% endfor %}
-{% endblock content%}
+{% endblock content %}

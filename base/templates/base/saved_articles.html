@@ -1,0 +1,17 @@
+{% extends 'main.html' %}
+{% block content %}
+<h1>Your Saved Articles</h1>
+{% for saved_article in saved_articles %}
+ 
+  <li>
+    <h2>{{ saved_article.article.title }}</h2>
+   
+  </li>
+{% empty %}
+  <p>You haven't saved any articles yet.</p>
+{% endfor %}
+ <p>This is a test message.</p>
+{% endblock %}
+
+
+
