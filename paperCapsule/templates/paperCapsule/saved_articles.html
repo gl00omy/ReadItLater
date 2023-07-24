@@ -26,6 +26,9 @@
                         <br>
                         <p>Tags</p>
                         <li class="list-group-item list-group-item-light">All tags</li>
+                        {% for tag in saved_articles_tags %}
+                            <li><a href="{% url 'tagged_saved_articles' tag_name=tag.name %}">{{ tag.name }}</a></li>
+                        {% endfor %}
                         {% endif %}
                     </ul>
            

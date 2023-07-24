@@ -36,6 +36,10 @@
         <div class="article-metadata">
             <a class="mr-2" href="#">{{ object.author }}</a>
             <small class="text-muted">{{ object.date_posted }}</small>
+            <p>Tags: {% for tag in object.tags.all %}
+                <li>{{ tag.name }}</li>
+            {% endfor %}
+            </p>
             {% if object.author == user %}
             <div>
                 <a href="{% url 'article-update' object.id %}" class="btn-secondary btn-sm mt-1 mb-1">Update</a>
@@ -56,7 +60,7 @@
 
 <p>Estimated Reading Time: {{ estimated_reading_time }} minutes</p>
 
-        <p class="article-content">{{ object.content }}</p>
+        <p class="article-content">{{ object.content|safe }}</p>
 
         <ul>
             {% for tag in object.tags.all %}

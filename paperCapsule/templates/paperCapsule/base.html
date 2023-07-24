@@ -26,6 +26,7 @@
             <div class="collapse navbar-collapse" id="navbarToggle">
               <div class="navbar-nav mr-auto">
                 <a class="nav-item nav-link" href="{% url 'paperCapsule-home'%}">Home</a>
+                
                 {% if user.is_authenticated %}
                 <a class="nav-item nav-link" href="{% url 'saved_articles' user.id %}">Saves</a>
                 {% endif %}

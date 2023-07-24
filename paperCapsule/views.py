@@ -19,12 +19,14 @@ def home(request):
     articles = Article.objects.all().order_by('-date_posted')
     last_three_articles = articles.exclude(saves__in=[request.user])[:3]
     saved_articles = articles.filter(saves=request.user)
+    tags = Tag.objects.all()
     
     
     context = {
         'articles': articles,
         'last_three_articles': last_three_articles,
         'saved_articles': saved_articles,
+        'tags': tags
        
     }
     return render(request, 'paperCapsule/home.html', context)
@@ -34,6 +36,11 @@ class ArticleListView(ListView):
     template_name = 'paperCapsule/home.html'
     context_object_name = 'articles'
     ordering = ['-date_posted']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tags'] = Tag.objects.all()
+        return context
 
 class ArticleDetailView(DetailView):
     model = Article
@@ -140,6 +147,13 @@ class SavedArticleListView(ListView):
         user_id = self.kwargs['user_id']
         return Article.objects.filter(saves__id=user_id)
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_saved_articles = context['articles']
+        saved_articles_tags = Tag.objects.filter(article__in=user_saved_articles).distinct()
+        context['saved_articles_tags'] = saved_articles_tags
+        return context
+    
 @login_required
 def article_archive(request, pk):
     article = get_object_or_404(Article, id=pk)
@@ -190,7 +204,8 @@ def article_unarchive(request, pk):
 def search_articles(request):
     if request.method == "POST":
         searched = request.POST['searched']
-        articles = Article.objects.filter(content__contains=searched)
+        saved_articles = Article.objects.filter(saves=request.user)
+        articles = saved_articles.filter(content__contains=searched)
         return render(request, 'paperCapsule/search_articles.html', {'searched': searched, 'articles': articles})
     else:
         return render(request, 'paperCapsule/search_articles.html')
@@ -209,4 +224,21 @@ def add_tag_to_article(request, article_id):
 
     return render(request, 'paperCapsule/add_tag.html', {'article': article})
 
+def all_tags(request):
+    tags = Tag.objects.all()
+    return render(request, 'paperCapsule/all_tags.html', {'tags': tags})
 
+def tagged_articles(request, tag_name):
+    tag = get_object_or_404(Tag, name=tag_name)
+    articles = Article.objects.filter(tags=tag)
+    return render(request, 'paperCapsule/tagged_articles.html', {'tag': tag, 'articles': articles})
+
+def tagged_saved_articles(request, tag_name):
+    tag = get_object_or_404(Tag, name=tag_name)
+    saved_articles_with_tag = Article.objects.filter(tags=tag, saves=request.user)
+
+    context = {
+        'tag_name': tag_name,
+        'articles': saved_articles_with_tag,
+    }
+    return render(request, 'paperCapsule/tagged_saved_articles.html', context)

@@ -1,0 +1,17 @@
+{% extends 'paperCapsule/base.html' %}
+
+{% block content %}
+<html>
+<head>
+    <title>All Tags</title>
+</head>
+<body>
+    <h1>All Tags</h1>
+    <ul>
+        {% for tag in tags %}
+        <li><a href="{% url 'tagged_articles' tag_name=tag.name %}">{{ tag.name }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+{% endblock content %}       

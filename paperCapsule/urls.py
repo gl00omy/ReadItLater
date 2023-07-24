@@ -29,6 +29,10 @@ urlpatterns = [
     path('article/<int:pk>/update/', ArticleUpdateView.as_view(), name='article-update'),
     path('article/<int:pk>/delete/', ArticleDeleteView.as_view(), name='article-delete'),
 
+    path('all-tags/', views.all_tags, name='all_tags'),
+    path('tag/<str:tag_name>/', views.tagged_articles, name='tagged_articles'),
+    path('tagged_saved_articles/<str:tag_name>/', views.tagged_saved_articles, name='tagged_saved_articles'),
+
 
 ]
 

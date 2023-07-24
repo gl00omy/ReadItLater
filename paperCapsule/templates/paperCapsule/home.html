@@ -23,7 +23,7 @@
 }
 </style>
 
-<p>Welcome to Paper Capsule, {{ user.username }}</p>
+<p>Welcome to Paper Capsule, {{ user.first_name }} {{ user.last_name }}</p>
 <h2>For You</h2>
 <p>Recommended for your interests</p>
 <div class="row">
@@ -50,6 +50,13 @@
                 </article>
             </div>
         {% endif %}
+    {% endfor %}
+</div>
+
+<div>
+    <h1>Tags</h1>
+    {% for tag in tags %}
+        <li><a href="{% url 'tagged_articles' tag_name=tag.name %}">{{ tag.name }}</a></li>
     {% endfor %}
 </div>
 
