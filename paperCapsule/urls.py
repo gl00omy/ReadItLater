@@ -1,5 +1,13 @@
 from django.urls import path
-from .views import ArticleListView, ArticleDetailView, FavoritedArticleListView, SavedArticleListView
+from .views import ( 
+    ArticleListView, 
+    ArticleDetailView, 
+    FavoritedArticleListView, 
+    SavedArticleListView,
+    ArticleCreateView,
+    ArticleUpdateView,
+    ArticleDeleteView
+    )
 from . import views
 
 
@@ -16,7 +24,10 @@ urlpatterns = [
     path('search_articles/', views.search_articles, name='search-articles'),
    
     path('add_tag/<int:article_id>/', views.add_tag_to_article, name='add_tag'),
-    
+
+    path('article/new/', ArticleCreateView.as_view(), name='article-create'),
+    path('article/<int:pk>/update/', ArticleUpdateView.as_view(), name='article-update'),
+    path('article/<int:pk>/delete/', ArticleDeleteView.as_view(), name='article-delete'),
 
 
 ]

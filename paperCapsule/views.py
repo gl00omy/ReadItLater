@@ -1,12 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import (
     ListView, 
-    DetailView
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView
 )
 from . models import Article
 from taggit.models import Tag
 from . forms import TagForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 import math
 
 AVERAGE_READING_SPEED = 200
@@ -51,6 +55,41 @@ class ArticleDetailView(DetailView):
         words = len(text.split())
         minutes = math.ceil(words / AVERAGE_READING_SPEED)
         return minutes
+
+class ArticleCreateView(LoginRequiredMixin, CreateView):
+    model = Article
+    fields = ['title', 'content', 'tags']
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+class ArticleUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Article
+    fields = ['title', 'content', 'tags']
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+    
+    def test_func(self):
+        article = self.get_object()
+        if self.request.user == article.author:
+            return True
+        return False
+    
+class ArticleDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Article
+    success_url = '/'
+
+    def test_func(self):
+        article = self.get_object()
+        if self.request.user == article.author:
+            return True
+        return False
+    
+    
+    
 
 @login_required
 def article_favorite(request, pk):
