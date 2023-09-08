@@ -8,13 +8,36 @@
 </head>
 <body>
     <h1>Articles tagged with "{{ tag.name }}"</h1>
-    <ul>
+        
         {% for article in articles %}
-            <li>
-                <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
-            </li>
-        {% endfor %}
-    </ul>
+        {% if not user.is_authenticated or user not in article.saves.all %}
+            <div class="col-md-4">
+                <article class="media content-section">
+                    <div class="media-body">
+                        <div class="article-metadata">
+                            <a class="mr-2" href="#">{{ article.author.first_name }} {{ article.author.last_name }}</a>
+                        </div>
+                        <h3><a class="article-title" href="{% url 'article-detail' article.id %}">{{ article.title }}</a></h3>
+                        
+                        <p class="article-content">
+                            {{ article.display_content|safe }}
+                        </p>
+                      
+                    
+                        
+                        <!-- The 'article-content' class will be used for styling the content and controlling its height. -->
+                        
+                        {% if user in article.saves.all %}
+                            <a href="{% url 'article-save' article.id %}">UnSave</a>
+                        {% else %}
+                            <a href="{% url 'article-save' article.id %}">Save</a>
+                        {% endif %}
+                        
+                    </div>
+                </article>
+            </div>
+        {% endif %}
+    {% endfor %}
 </body>
 </html>
 

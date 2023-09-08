@@ -12,24 +12,28 @@ from . forms import TagForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 import math
+from django.utils.text import Truncator
 
 AVERAGE_READING_SPEED = 200
 
+@login_required
 def home(request):
     articles = Article.objects.all().order_by('-date_posted')
-    last_three_articles = articles.exclude(saves__in=[request.user])[:3]
-    saved_articles = articles.filter(saves=request.user)
+    #saved_articles = articles.filter(saves=request.user)
     tags = Tag.objects.all()
-    
-    
+
+    # Get the tags associated with unsaved articles
+    #unsaved_article_tags = Tag.objects.filter(article__in=articles.exclude(saves=request.user)).distinct()
+
     context = {
         'articles': articles,
-        'last_three_articles': last_three_articles,
-        'saved_articles': saved_articles,
-        'tags': tags
-       
+        #'last_three_articles': last_three_articles,
+        #'saved_articles': saved_articles,
+        'tags': tags,
+        #'unsaved_article_tags': unsaved_article_tags,
     }
     return render(request, 'paperCapsule/home.html', context)
+
 
 class ArticleListView(ListView):
     model = Article
@@ -39,8 +43,21 @@ class ArticleListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['tags'] = Tag.objects.all()
+        max_chars = 200  # Adjust the number of characters you want to show
+
+        for article in context['articles']:
+            # Truncate the article content
+            article.display_content = Truncator(article.content).chars(max_chars)
+
+            # Add a flag to indicate if the article content is truncated or not
+            article.is_truncated = len(article.content) > max_chars
+
+        # Get the tags associated with unsaved articles
+        #unsaved_article_tags = Tag.objects.filter(article__in=self.get_queryset().exclude(saves=self.request.user)).distinct()
+        #context['unsaved_article_tags'] = unsaved_article_tags
+
         return context
+
 
 class ArticleDetailView(DetailView):
     model = Article
@@ -112,7 +129,7 @@ def article_favorite(request, pk):
             article.favorites.add(request.user)
     return redirect(request.META.get("HTTP_REFERER"))
 
-class FavoritedArticleListView(ListView):
+class FavoritedArticleListView(LoginRequiredMixin, ListView):
     model = Article
     template_name = 'paperCapsule/favorited_articles.html'
     context_object_name = 'articles'
@@ -120,6 +137,32 @@ class FavoritedArticleListView(ListView):
     def get_queryset(self):
         user_id = self.kwargs['user_id']
         return Article.objects.filter(favorites__id=user_id)
+
+    @staticmethod
+    def calculate_reading_time(text):
+        words = len(text.split())
+        minutes = math.ceil(words / AVERAGE_READING_SPEED)
+        return minutes
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_favorited_articles = context['articles']
+        max_chars = 100  # Adjust the number of characters you want to show
+
+        # Truncate the article content and add a flag to indicate if it is truncated
+        for article in user_favorited_articles:
+            article.display_content = Truncator(article.content).chars(max_chars)
+            article.is_truncated = len(article.content) > max_chars
+
+            # Calculate the estimated reading time for each favorited article
+            article.estimated_reading_time = self.calculate_reading_time(article.content)
+
+        # Retrieve the favorited articles tags and add them to the context
+        context['saved_articles_tags'] = Tag.objects.filter(
+            article__in=user_favorited_articles
+        ).distinct()
+
+        return context
 
 @login_required
 def article_save(request, pk):
@@ -138,7 +181,7 @@ def article_save(request, pk):
         article.saves.add(request.user)
     return redirect(request.META.get("HTTP_REFERER"))
 
-class SavedArticleListView(ListView):
+class SavedArticleListView(LoginRequiredMixin, ListView):
     model = Article
     template_name = 'paperCapsule/saved_articles.html'
     context_object_name = 'articles'
@@ -146,13 +189,30 @@ class SavedArticleListView(ListView):
     def get_queryset(self):
         user_id = self.kwargs['user_id']
         return Article.objects.filter(saves__id=user_id)
-    
+
+    @staticmethod
+    def calculate_reading_time(text):
+        words = len(text.split())
+        minutes = math.ceil(words / AVERAGE_READING_SPEED)
+        return minutes
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user_saved_articles = context['articles']
         saved_articles_tags = Tag.objects.filter(article__in=user_saved_articles).distinct()
         context['saved_articles_tags'] = saved_articles_tags
+        max_chars = 100  # Adjust the number of characters you want to show
+
+        # Truncate the article content and add a flag to indicate if it is truncated
+        for article in user_saved_articles:
+            article.display_content = Truncator(article.content).chars(max_chars)
+            article.is_truncated = len(article.content) > max_chars
+
+            # Calculate the estimated reading time for each saved article
+            article.estimated_reading_time = self.calculate_reading_time(article.content)
+
         return context
+
     
 @login_required
 def article_archive(request, pk):
@@ -173,7 +233,7 @@ def article_archive(request, pk):
     return redirect(request.META.get("HTTP_REFERER"))
 
 
-class ArchivedArticleListView(ListView):
+class ArchivedArticleListView(LoginRequiredMixin, ListView):
     model = Article
     template_name = 'paperCapsule/archived_articles.html'
     context_object_name = 'articles'
@@ -181,6 +241,31 @@ class ArchivedArticleListView(ListView):
     def get_queryset(self):
         user_id = self.kwargs['user_id']
         return Article.objects.filter(archived__id=user_id)
+
+    @staticmethod
+    def calculate_reading_time(text):
+        words = len(text.split())
+        minutes = math.ceil(words / AVERAGE_READING_SPEED)
+        return minutes
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_archived_articles = context['articles']
+        max_chars = 100  # Adjust the number of characters you want to show
+
+        # Truncate the article content and add a flag to indicate if it is truncated
+        for article in user_archived_articles:
+            article.display_content = Truncator(article.content).chars(max_chars)
+            article.is_truncated = len(article.content) > max_chars
+
+            # Calculate the estimated reading time for each archived article
+            article.estimated_reading_time = self.calculate_reading_time(article.content)
+
+        # Retrieve the saved articles tags and add them to the context
+        context['saved_articles_tags'] = Tag.objects.filter(article__in=user_archived_articles).distinct()
+
+        return context
+
 
 @login_required
 def article_unarchive(request, pk):
@@ -230,9 +315,16 @@ def all_tags(request):
 
 def tagged_articles(request, tag_name):
     tag = get_object_or_404(Tag, name=tag_name)
-    articles = Article.objects.filter(tags=tag)
-    return render(request, 'paperCapsule/tagged_articles.html', {'tag': tag, 'articles': articles})
 
+    # Get the articles with the specified tag
+    articles_with_tag = Article.objects.filter(tags=tag)
+
+    # Filter out the saved articles for the current user
+    unsaved_articles = articles_with_tag.exclude(saves=request.user)
+
+    return render(request, 'paperCapsule/tagged_articles.html', {'tag': tag, 'articles': unsaved_articles})
+
+@login_required
 def tagged_saved_articles(request, tag_name):
     tag = get_object_or_404(Tag, name=tag_name)
     saved_articles_with_tag = Article.objects.filter(tags=tag, saves=request.user)
@@ -240,5 +332,52 @@ def tagged_saved_articles(request, tag_name):
     context = {
         'tag_name': tag_name,
         'articles': saved_articles_with_tag,
+        'saved_articles_tags': Tag.objects.filter(article__in=saved_articles_with_tag).distinct(),
     }
     return render(request, 'paperCapsule/tagged_saved_articles.html', context)
+
+
+class TaggedSavedArticlesListView(LoginRequiredMixin, ListView):
+    model = Article
+    template_name = 'paperCapsule/tagged_saved_articles.html'
+    context_object_name = 'articles'
+
+    def get_queryset(self):
+        tag_name = self.kwargs['tag_name']
+        tag = get_object_or_404(Tag, name=tag_name)
+        saved_articles_with_tag = Article.objects.filter(tags=tag, saves=self.request.user)
+
+        for article in saved_articles_with_tag:
+            # Calculate the estimated reading time for each saved article
+            article.estimated_reading_time = self.calculate_reading_time(article.content)
+
+        return saved_articles_with_tag
+
+    @staticmethod
+    def calculate_reading_time(text):
+        words = len(text.split())
+        minutes = math.ceil(words / AVERAGE_READING_SPEED)
+        return minutes
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tag_name = self.kwargs['tag_name']
+        user_favorited_articles = context['articles']
+        context['tag_name'] = tag_name
+        max_chars = 100  # Adjust the number of characters you want to show
+
+        # Truncate the article content and add a flag to indicate if it is truncated
+        for article in user_favorited_articles:
+            article.display_content = Truncator(article.content).chars(max_chars)
+            article.is_truncated = len(article.content) > max_chars
+
+            # Calculate the estimated reading time for each favorited article
+            article.estimated_reading_time = self.calculate_reading_time(article.content)
+
+
+        # Retrieve the saved articles tags and add them to the context
+        context['saved_articles_tags'] = Tag.objects.filter(
+            article__in=context['articles']
+        ).distinct()
+
+        return context

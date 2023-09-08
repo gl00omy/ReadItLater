@@ -1,61 +1,109 @@
 {% extends "paperCapsule/base.html"%}
+{% block search_form %}
+    <!-- Add the specific search form content for the saved_articles.html page here -->
+    <!-- This will override the search form in the navbar on the saved articles page -->
+    <form class="d-flex" method="POST" action="{% url 'search-articles' %}">
+        {% csrf_token %}
+        <input class="form-control me-2" type="search" placeholder="Search your saves" name="searched">
+        <button class="btn btn-outline-light" type="submit">Search</button>
+    </form>
+{% endblock %}
 {% block content %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>Archived Articles</title>
+    <style>
+        .tag-container {
+    margin-bottom: 20px;
+}
+
+/* Style for the "Tags" heading */
+.tag-container h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Style for the tag list */
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+    list-style: none;
+    padding: 0;
+}
+
+/* Style for each tag link */
+.tag-link {
+    padding: 5px 10px;
+    background-color: #f0f0f0;
+    color: #333;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    font-size: 14px; /* Adjust the font size as desired */
+}
+
+.tag-link:hover {
+    background-color: #ddd;
+}
+    </style>
 </head>
 <body>
     <h1>Archived Articles by {{ user.username }}</h1>
     
     <div class="row">
-        <div class="col-md-2">
+        
             
-                    <ul class="list-group">
-                        <li class="list-group-item list-group-item-light"><a href="{% url 'paperCapsule-home' %}">Home</a></li>
-                        {% if user.is_authenticated %}
-                        <li class="list-group-item list-group-item-light"><a href="{% url 'saved_articles' user.id %}">Saves</a></li>
-                        <br>
-                        <p>Filters</p>
-                        <li class="list-group-item list-group-item-light"><a href="{% url 'archived_articles' user.id %}">Archived</a></li>
-                        <li class="list-group-item list-group-item-light"><a href="{% url 'favorited_articles' user.id %}">Favorite</a></li>
-                        
-                        
-                        <br>
-                        <p>Tags</p>
-                        <li class="list-group-item list-group-item-light">All tags</li>
-                        {% endif %}
-                    </ul>
+            {% include 'paperCapsule/sidebar_tags.html' %}
            
-        </div>
+       
         <div class="col-md-10">
-            <ul>
+            <div class="row">
                 {% for article in articles %}
-                    <li>{{ article.title }} - {{ article.author }}</li>
-                    {% if user in article.saves.all %}
-                    <a href="{% url 'article-save' article.id %}">UnSave</a>
-                    {% else %}
-                        <a href="{% url 'article-save' article.id %}">Save</a>
-                    {% endif %}
-                    {% if user in article.favorites.all %}
-                    <a href="{% url 'article-favorite' article.id %}">UnFav</a>
-                    {% else %}
-                        <a href="{% url 'article-favorite' article.id %}">Fav</a>
-                    {% endif %}
-        
-                    {% if user in article.archived.all %}
-                    <a href="{% url 'article_archive' article.id %}">Unarchive</a>
-                    {% else %}
-                        <a href="{% url 'article_archive' article.id %}">Archive</a>
-                    {% endif %}
-                    
-                    <a href="{% url 'add_tag' article.id %}">Add Tag</a>
-        
-                {% empty %}
-                    <li>No Saved articles found.</li>
+                    <div class="col-md-4 mb-4">
+                        <!-- 'mb-4' class adds a margin at the bottom of each column -->
+                        <article class="media content-section d-flex flex-column h-100">
+                            <!-- Use 'd-flex' and 'flex-column' to create a flex container with column layout -->
+                            <div class="media-body flex-fill">
+                                <!-- Use 'flex-fill' to make the media-body take up the available space -->
+                                <div class="article-metadata">
+                                    <a class="mr-2" href="#">{{ article.author.first_name }} {{ article.author.last_name }}</a>
+                                </div>
+                                <h5><a class="article-title" href="{% url 'article-detail' article.id %}">{{ article.title }}</a></h5>
+                                
+                                <p class="article-content">
+                                    {{ article.display_content|safe }}
+                                </p>
+
+                                <p>{{ article.estimated_reading_time }} mins</p>
+                            </div>
+                            <div class="mt-auto">
+                                <!-- Use 'mt-auto' to push the buttons to the bottom of the card -->
+                                {% if user in article.saves.all %}
+                                    <a href="{% url 'article-save' article.id %}" class="btn btn-sm btn-danger">UnSave</a>
+                                {% else %}
+                                    <a href="{% url 'article-save' article.id %}" class="btn btn-sm btn-primary">Save</a>
+                                {% endif %}
+                                {% if user in article.favorites.all %}
+                                    <a href="{% url 'article-favorite' article.id %}" class="btn btn-sm btn-danger">UnFav</a>
+                                {% else %}
+                                    <a href="{% url 'article-favorite' article.id %}" class="btn btn-sm btn-primary">Fav</a>
+                                {% endif %}
+                                {% if user in article.archived.all %}
+                                    <a href="{% url 'article_unarchive' article.id %}" class="btn btn-sm btn-danger">Unarchive</a>
+                                {% else %}
+                                    <a href="{% url 'article_archive' article.id %}" class="btn btn-sm btn-primary">Archive</a>
+                                {% endif %}
+                                <!--<a href="{% url 'add_tag' article.id %}" class="btn btn-sm btn-info">Add Tag</a>-->
+                            </div>
+                        </article>
+                    </div>
                 {% endfor %}
-            </ul>
-        </div>
+            </div>
     </div>
 
 

@@ -6,7 +6,8 @@ from .views import (
     SavedArticleListView,
     ArticleCreateView,
     ArticleUpdateView,
-    ArticleDeleteView
+    ArticleDeleteView,
+    TaggedSavedArticlesListView,
     )
 from . import views
 
@@ -31,7 +32,7 @@ urlpatterns = [
 
     path('all-tags/', views.all_tags, name='all_tags'),
     path('tag/<str:tag_name>/', views.tagged_articles, name='tagged_articles'),
-    path('tagged_saved_articles/<str:tag_name>/', views.tagged_saved_articles, name='tagged_saved_articles'),
+    path('tagged_saved_articles/<str:tag_name>/', TaggedSavedArticlesListView.as_view(), name='tagged_saved_articles'),
 
 
 ]

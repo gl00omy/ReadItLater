@@ -21,6 +21,27 @@
     .article-title {
   margin-top: 0;
 }
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+}
+
+/* Style for each tag link */
+.tag-link {
+    padding: 5px 10px;
+    background-color: #f0f0f0;
+    color: #333;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    font-size: 14px; /* Adjust the font size as desired */
+}
+
+.tag-link:hover {
+    background-color: #ddd;
+}
 </style>
 
 <p>Welcome to Paper Capsule, {{ user.first_name }} {{ user.last_name }}</p>
@@ -33,11 +54,16 @@
                 <article class="media content-section">
                     <div class="media-body">
                         <div class="article-metadata">
-                            <a class="mr-2" href="#">{{ article.author }}</a>
+                            <a class="mr-2" href="#">{{ article.author.first_name }} {{ article.author.last_name }}</a>
                         </div>
                         <h3><a class="article-title" href="{% url 'article-detail' article.id %}">{{ article.title }}</a></h3>
                         
-                        <p class="article-content">{{ article.content }}</p>
+                        <p class="article-content">
+                            {{ article.display_content|safe }}
+                        </p>
+                      
+                    
+                        
                         <!-- The 'article-content' class will be used for styling the content and controlling its height. -->
                         
                         {% if user in article.saves.all %}
@@ -53,11 +79,21 @@
     {% endfor %}
 </div>
 
-<div>
-    <h1>Tags</h1>
-    {% for tag in tags %}
-        <li><a href="{% url 'tagged_articles' tag_name=tag.name %}">{{ tag.name }}</a></li>
-    {% endfor %}
+<h3>Tags</h3>
+<br>
+<div class="row">
+    <div class="col-md-12">
+        <ul class="list-unstyled tag-list">
+            {% for tag in unsaved_article_tags %}
+                <li><a class="tag-link" href="{% url 'tagged_articles' tag_name=tag.name %}">{{ tag.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
+
+
+<br>
+<br>
+<br>
 
 {% endblock content %}

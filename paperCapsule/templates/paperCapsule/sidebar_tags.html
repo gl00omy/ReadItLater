@@ -1,0 +1,22 @@
+<div class="col-md-2">
+    <ul class="list-group">
+        <!-- Sidebar content here -->
+        <li class="list-group-item list-group-item-light"><a href="{% url 'paperCapsule-home' %}">Home</a></li>
+        {% if user.is_authenticated %}
+        <li class="list-group-item list-group-item-light"><a href="{% url 'saved_articles' user.id %}">Saves</a></li>
+        <br>
+        <p>Filters</p>
+        <li class="list-group-item list-group-item-light"><a href="{% url 'archived_articles' user.id %}">Archived</a></li>
+        <li class="list-group-item list-group-item-light"><a href="{% url 'favorited_articles' user.id %}">Favorite</a></li>
+        <br>
+        <div class="tag-container">
+            <p>Tags</p>
+            <ul class="tag-list">
+                {% for tag in saved_articles_tags %}
+                    <li><a class="tag-link" href="{% url 'tagged_saved_articles' tag_name=tag.name %}">{{ tag.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </ul>
+</div>

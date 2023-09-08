@@ -82,8 +82,10 @@ WSGI_APPLICATION = 'ReadItLater.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ReadItLater',
+        'USER': 'zhibek',
+        'PASSWORD': 'wannaread',
     }
 }
 
@@ -137,3 +139,5 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 LOGIN_REDIRECT_URL = 'paperCapsule-home'
 LOGIN_URL ='login'
+
+
