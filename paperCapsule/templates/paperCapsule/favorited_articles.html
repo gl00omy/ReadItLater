@@ -53,11 +53,12 @@
     </style>
 </head>
 <body>
-    <h1>Favorite Articles by {{ user.username }}</h1>
+
     
     <div class="row">
         {% include 'paperCapsule/sidebar_tags.html' %}
         <div class="col-md-10">
+            <h5>Favorite Articles by {{ user.username }}</h5>
             <div class="row">
                 {% for article in articles %}
                     <div class="col-md-4">

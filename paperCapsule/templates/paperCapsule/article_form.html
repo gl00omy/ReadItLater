@@ -1,12 +1,25 @@
 {% extends "paperCapsule/base.html"%}
 {% load crispy_forms_tags %}
+{% load static %}
 {% block content %}
-    <div class="content-section">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="{% static 'paperCapsule/create_forms.css' %}">
+</head>
+<body>
+    
+</body>
+</html>
+    <div class="form-group">
         <form action="" method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Create Article</legend>
-                {{ form|crispy }}
+              
+                {{ form.as_p }}
                 {{ form.media }}
             </fieldset>
             <div class="form-group">

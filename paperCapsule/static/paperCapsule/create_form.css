@@ -1,0 +1,16 @@
+/* CSS in your forms.css file */
+.my-custom-form {
+    max-width: 600px !important; /* Adjust the width as needed */
+    margin: 0 auto !important; /* Center the form horizontally */
+    background-color: #fff !important; /* Change the background color */
+    border: 1px solid #ddd !important; /* Add a border */
+    padding: 20px !important; /* Add padding */
+    box-shadow: none !important; /* Remove the shadow */
+}
+
+/* Style the legend */
+.my-custom-form legend {
+    color: #333 !important; /* Change the text color */
+    font-size: 24px !important; /* Adjust the font size */
+    border: none !important; /* Remove the border */
+}

@@ -1,6 +1,16 @@
 {% extends "paperCapsule/base.html"%}
 {% load crispy_forms_tags %}
+{% load static %}
 {% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="{% static 'paperCapsule/forms.css' %}">
+</head>
+<body>
     <div class="content-section">
         <div class="media">
         <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
@@ -21,4 +31,7 @@
             </div>
         </form>
     </div>
+</body>
+</html>
+
 {% endblock content%}

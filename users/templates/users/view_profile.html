@@ -1,0 +1,13 @@
+{% extends "paperCapsule/base.html" %}
+{% block content %}
+  <h1>User Profile</h1>
+  <p>Username: {{ user_profile.user.username }}</p>
+  <p>Email: {{ user_profile.user.email }}</p>
+
+  <h2>Articles Created</h2>
+  <ul>
+    {% for article in articles_created %}
+      <li><a href="{% url 'article-detail' article.id %}">{{ article.title }}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock content %}

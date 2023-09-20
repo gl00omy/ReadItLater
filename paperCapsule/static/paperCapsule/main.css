@@ -1,5 +1,5 @@
 body {
-    background: #fafafa;
+    background-color: #ffffff;
     color: #333333;
     margin-top: 5rem;
   }
@@ -40,8 +40,7 @@ body {
     color: #444444;
   }
   
-  a.article-title:hover {
-    color: #428bca;
+  a.article-title {
     text-decoration: none;
   }
   
@@ -65,6 +64,12 @@ body {
     color: #333;
     text-decoration: none;
   }
+  /* Add a box-shadow to the article card on hover */
+.content-section:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Adjust the shadow properties as needed */
+  transition: box-shadow 0.3s ease; /* Add a smooth transition effect */
+}
+
   
   .article-svg {
     width: 25px;
@@ -108,4 +113,121 @@ body {
   color: #704214;
 }
 
+.custom-button {
+  border: none;
+  border-radius: 20px; /* Adjust the border radius as needed */
+}
 
+
+
+
+  .tag-container {
+margin-bottom: 20px;
+}
+
+/* Style for the "Tags" heading */
+.tag-container h1 {
+font-size: 24px;
+font-weight: bold;
+margin-bottom: 10px;
+color: #333;
+}
+
+/* Style for the tag list */
+.tag-list {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+justify-content: flex-start;
+list-style: none;
+padding: 0;
+}
+
+/* Style for each tag link */
+.tag-link {
+padding: 5px 10px;
+background-color: #f0f0f0;
+color: #333;
+border-radius: 3px;
+text-decoration: none;
+transition: background-color 0.3s;
+font-size: 14px; /* Adjust the font size as desired */
+}
+
+.tag-link:hover {
+background-color: #ddd;
+}
+
+.fixed-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px; /* Adjust the width as needed */
+  height: 100%; /* Make it full-height */
+  overflow-y: auto; /* Add vertical scroll if needed */
+}
+
+/* Custom CSS for the article card */
+.media.content-section {
+  display: grid;
+  grid-template-rows: 1fr auto; /* Divide into two rows, content and save-link */
+  height: 100%;
+}
+
+/* Style for the content container */
+.media-body {
+  max-height: 100px; /* Set a fixed maximum height for the content */
+  overflow: hidden;
+}
+
+/* Style for the title */
+.article-title {
+  white-space: normal; /* Allow text to wrap to the next line */
+  overflow: hidden;    /* Hide any text that overflows the container */
+  max-width: 100%;     /* Set a maximum width for the title */
+}
+
+.article-content {
+  overflow: hidden;    /* Hide any text that overflows the container */
+  max-height: 150px;   /* Set a fixed height for content */
+  line-height: 1.2em;  /* Set the line height for each line of text */
+}
+
+
+
+/* Style for the save-link container */
+.save-link {
+  display: flex;
+  justify-content: flex-end; /* Move contents to the right */
+  align-items: flex-end; /* Align contents to the bottom */
+  padding: 5px; /* Adjust the padding as needed */
+  background-color: rgba(255, 255, 255, 0.9); /* Background color for the link */
+  border-radius: 0 0 5px 5px; /* Rounded corners for the bottom-right */
+}
+
+/* Custom CSS for fixed height cards */
+.fixed-height-card {
+  height: 300px; /* Adjust the height to your desired fixed height */
+  overflow: hidden; /* Hide overflow content if it exceeds the fixed height */
+}
+/* CSS for equal-height cards */
+/* CSS for equal-height cards using CSS Grid */
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); /* Adjust column width as needed */
+  gap: 1rem; /* Adjust the gap between cards as needed */
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.card-footer {
+  background-color: rgba(255, 255, 255, 0.7); /* Transparent white background */
+  padding: 10px;
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}

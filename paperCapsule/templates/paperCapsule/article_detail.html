@@ -1,105 +1,30 @@
 {% extends "paperCapsule/base.html" %}
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        /* Your styles go here */
-       
-
-        .article-content.dark-mode {
-            /* Styles for the dark mode */
-            background-color: black;
-            color: white;
-        }
-
-        .article-content.light-mode {
-            /* Styles for the light mode */
-            background-color: white;
-            color: black;
-        }
-
-        .article-content.sepia-mode {
-            /* Styles for the sepia mode */
-            background-color: #f4ecd8;
-            color: #704214;
-        }
-    </style>
-</head>
-<body>
-    
-    <article class="media content-section">
-        <div class="media-body">
-        <div class="article-metadata">
-            <a class="mr-2" href="#">{{ object.author.first_name }} {{ object.author.last_name }}</a>
-            <small class="text-muted">{{ object.date_posted }}</small>
-            <p>Tags: {% for tag in object.tags.all %}
-                {{ tag.name }}
-            {% endfor %}
-            </p>
-            {% if object.author == user %}
-            <div>
-                <a href="{% url 'article-update' object.id %}" class="btn-secondary btn-sm mt-1 mb-1">Update</a>
-                <a href="{% url 'article-delete' object.id %}" class="btn-danger btn-sm mt-1 mb-1">Delete</a>
-            </div>
-            {% endif %}
+    <div class="article-metadata">
+        <a class="mr-2" href="#">{{ object.author.first_name }} {{ object.author.last_name }}</a>
+        <small class="text-muted">{{ object.date_posted }}</small>
+        <p>Tags: {% for tag in object.tags.all %}
+            {{ tag.name }}
+        {% endfor %}
+        </p>
+        {% if object.author == user %}
+        <div>
+            <a href="{% url 'article-update' object.id %}" class="btn-secondary btn-sm mt-1 mb-1">Update</a>
+            <a href="{% url 'article-delete' object.id %}" class="btn-danger btn-sm mt-1 mb-1">Delete</a>
         </div>
-        <h2 class="article-title">{{ object.title }}</h2>
+        {% endif %}
+    </div>
 
-        <!-- Add the following buttons for text size adjustment -->
-        <!--<button onclick="adjustTextSize(1)">Increase Text Size</button>
-        <button onclick="adjustTextSize(-1)">Decrease Text Size</button>-->
+    <!-- Add the following buttons for text size adjustment -->
+    <!--<button onclick="adjustTextSize(1)">Increase Text Size</button>
+    <button onclick="adjustTextSize(-1)">Decrease Text Size</button>-->
 
-        <!-- Add the following buttons for color mode change -->
-        <!-- <button onclick="changeColorMode('dark-mode')">Dark Mode</button>
-<button onclick="changeColorMode('light-mode')">Light Mode</button>
-<button onclick="changeColorMode('sepia-mode')">Sepia Mode</button>-->
+    <!-- Add the following buttons for color mode change -->
+    <!-- <button onclick="changeColorMode('dark-mode')">Dark Mode</button>
+    <button onclick="changeColorMode('light-mode')">Light Mode</button>
+    <button onclick="changeColorMode('sepia-mode')">Sepia Mode</button>-->
 
-<!--<p>Estimated Reading Time: {{ estimated_reading_time }} minutes</p>-->
+    <!--<p>Estimated Reading Time: {{ estimated_reading_time }} minutes</p>-->
 
-        <p class="article-content">{{ object.content|safe }}</p>
-
-       
-        </div>
-    </article>
-
-    <script>
-        function adjustTextSize(change) {
-            const articleContent = document.querySelector('.article-content');
-            const currentSize = parseInt(window.getComputedStyle(articleContent).fontSize, 10);
-            const newSize = currentSize + change;
-            articleContent.style.fontSize = newSize + 'px';
-        }
-
-        function changeColorMode(mode) {
-            console.log('Changing color mode:', mode);
-    const articleContent = document.querySelector('.article-content');
-    articleContent.className = 'article-content ' + mode;
-  }
-    </script>
-</body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{% endblock content%}
+    <p class="article-content">{{ object.content|safe }}</p>
+{% endblock content %}

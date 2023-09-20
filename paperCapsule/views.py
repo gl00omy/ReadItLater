@@ -13,24 +13,36 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 import math
 from django.utils.text import Truncator
+from .forms import ArticleForm
 
 AVERAGE_READING_SPEED = 200
 
 @login_required
 def home(request):
     articles = Article.objects.all().order_by('-date_posted')
-    #saved_articles = articles.filter(saves=request.user)
+    saved_articles = articles.filter(saves=request.user)
+    unsaved_articles = articles.exclude(saves=request.user)
     tags = Tag.objects.all()
+    max_title_chars = 50  # Adjust this to your desired character limit for the title
+    max_content_chars = 200 
+    
 
     # Get the tags associated with unsaved articles
-    #unsaved_article_tags = Tag.objects.filter(article__in=articles.exclude(saves=request.user)).distinct()
+    unsaved_articles_tags = Tag.objects.filter(article__in=unsaved_articles).distinct()
+
+    for article in articles:
+        article.display_title = Truncator(article.title).chars(max_title_chars)
+        article.display_content = Truncator(article.content).chars(max_content_chars)
+
+
 
     context = {
         'articles': articles,
         #'last_three_articles': last_three_articles,
         #'saved_articles': saved_articles,
-        'tags': tags,
-        #'unsaved_article_tags': unsaved_article_tags,
+        #'tags': tags,
+        'unsaved_articles': unsaved_articles,
+        'unsaved_articles_tags': unsaved_articles_tags,
     }
     return render(request, 'paperCapsule/home.html', context)
 
@@ -82,7 +94,8 @@ class ArticleDetailView(DetailView):
 
 class ArticleCreateView(LoginRequiredMixin, CreateView):
     model = Article
-    fields = ['title', 'content', 'tags']
+    form_class = ArticleForm
+    #fields = ['title', 'content', 'tags']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -321,8 +334,9 @@ def tagged_articles(request, tag_name):
 
     # Filter out the saved articles for the current user
     unsaved_articles = articles_with_tag.exclude(saves=request.user)
+    unsaved_article_tags = Tag.objects.filter(article__in=unsaved_articles).distinct()
 
-    return render(request, 'paperCapsule/tagged_articles.html', {'tag': tag, 'articles': unsaved_articles})
+    return render(request, 'paperCapsule/tagged_articles.html', {'tag': tag, 'articles': unsaved_articles, 'unsaved_article_tags': unsaved_article_tags})
 
 @login_required
 def tagged_saved_articles(request, tag_name):

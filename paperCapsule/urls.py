@@ -23,8 +23,9 @@ urlpatterns = [
     path('user/<int:user_id>/archived/', views.ArchivedArticleListView.as_view(), name='archived_articles'),
     path('article/unarchive/<int:pk>/', views.article_unarchive, name='article_unarchive'),
     path('search_articles/', views.search_articles, name='search-articles'),
-   
+
     path('add_tag/<int:article_id>/', views.add_tag_to_article, name='add_tag'),
+
 
     path('article/new/', ArticleCreateView.as_view(), name='article-create'),
     path('article/<int:pk>/update/', ArticleUpdateView.as_view(), name='article-update'),
@@ -33,7 +34,5 @@ urlpatterns = [
     path('all-tags/', views.all_tags, name='all_tags'),
     path('tag/<str:tag_name>/', views.tagged_articles, name='tagged_articles'),
     path('tagged_saved_articles/<str:tag_name>/', TaggedSavedArticlesListView.as_view(), name='tagged_saved_articles'),
-
-
 ]
 

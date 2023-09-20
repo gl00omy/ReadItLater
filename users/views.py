@@ -1,5 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
+
+from paperCapsule.models import Article
+from users.models import Profile
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
 
@@ -41,3 +44,14 @@ def profile(request):
         'p_form': p_form
     }
     return render(request, 'users/profile.html', context)
+
+def viewProfile(request, username):
+    user_profile = get_object_or_404(Profile, user__username=username)
+    articles_created = Article.objects.filter(author=user_profile.user)
+
+    context = {
+        'user_profile': user_profile,
+        'articles_created': articles_created,
+    }
+
+    return render(request, 'users/view_profile.html', context)
