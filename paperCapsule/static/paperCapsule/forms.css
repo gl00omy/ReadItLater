@@ -47,3 +47,32 @@ input[type="password"] {
 .text-muted a:hover {
     text-decoration: underline;
 }
+.btn{
+    background-color: #6A7BA2;
+    color: #ffffff;
+  }
+  .btn:hover{
+    color: #FFDFDE;
+  }
+
+
+  /* Add styles for the list items */
+.article-list-item {
+    list-style-type: none; /* Remove the bullet points */
+    margin: 0; /* Remove default margins */
+    padding: 10px 0; /* Add some vertical spacing between items */
+    border-bottom: 1px solid #ccc; /* Add a horizontal separator between items */
+  }
+  
+  /* Style the links within the list items */
+  .article-list-item a {
+    text-decoration: none; /* Remove underlines from links */
+    color: #333; /* Set the link color */
+    transition: color 0.3s ease; /* Add a smooth color transition effect */
+  }
+  
+  /* Change link color on hover */
+  .article-list-item a:hover {
+    color: #007bff; /* Change the link color on hover to a different color */
+  }
+  

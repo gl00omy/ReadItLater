@@ -1,39 +1,12 @@
 {% extends "paperCapsule/base.html" %}
 {% block content %}
-<style>
-    /* Style for the tag list */
-.tag-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: flex-start;
-    list-style: none;
-    padding: 0;
-}
 
-/* Style for each tag link */
-.tag-link {
-    padding: 5px 10px;
-    background-color: #f0f0f0;
-    color: #333;
-    border-radius: 3px;
-    text-decoration: none;
-    transition: background-color 0.3s;
-    font-size: 14px; /* Adjust the font size as desired */
-}
 
-.tag-link:hover {
-    background-color: #ddd;
-}
-    </style>
-</style>
-
-<h2>Tagged Saved Articles - {{ tag_name }}</h2>
 <div class="row">
 {% include 'paperCapsule/sidebar_tags.html' %}
 
 {% for article in articles %}
-    <div class="col-md-10">
+    <div class="col-md-10"><h2>Articles with "{{ tag_name }}"" tag </h2>
             <div class="row">
                 {% for article in articles %}
                     <div class="col-md-4">
@@ -65,14 +38,11 @@
                                 {% else %}
                                     <a href="{% url 'article_archive' article.id %}" class="btn btn-sm btn-primary">Archive</a>
                                 {% endif %}
-                                <!--<a href="{% url 'add_tag' article.id %}" class="btn btn-sm btn-secondary">Add Tag</a>-->
                             </div>
                         </article>
                     </div>
                 {% endfor %}
             </div>
-    
-   
 {% empty %}
     <li>No saved articles found for this tag.</li>
 {% endfor %}

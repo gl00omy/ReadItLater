@@ -13,61 +13,21 @@
 <html>
 <head>
     <title>Favorite Articles</title>
-    <style>
-        .tag-container {
-    margin-bottom: 20px;
-}
-
-/* Style for the "Tags" heading */
-.tag-container h1 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-/* Style for the tag list */
-.tag-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: flex-start;
-    list-style: none;
-    padding: 0;
-}
-
-/* Style for each tag link */
-.tag-link {
-    padding: 5px 10px;
-    background-color: #f0f0f0;
-    color: #333;
-    border-radius: 3px;
-    text-decoration: none;
-    transition: background-color 0.3s;
-    font-size: 14px; /* Adjust the font size as desired */
-}
-
-.tag-link:hover {
-    background-color: #ddd;
-}
-    </style>
 </head>
 <body>
-
-    
     <div class="row">
         {% include 'paperCapsule/sidebar_tags.html' %}
         <div class="col-md-10">
-            <h5>Favorite Articles by {{ user.username }}</h5>
+            <h5>Favorite</h5>
             <div class="row">
                 {% for article in articles %}
                     <div class="col-md-4">
-                        <article class="media content-section">
+                        <article class="media content-section d-flex flex-column h-100">
                             <div class="media-body">
                                 <div class="article-metadata">
                                     <a class="mr-2" href="#">{{ article.author.first_name }} {{ article.author.last_name }}</a>
                                 </div>
-                                <h5><a class="article-title" href="{% url 'article-detail' article.id %}">{{ article.title }}</a></h5>
+                                <h5><a class="article-title custom-title" href="{% url 'article-detail' article.id %}">{{ article.title }}</a></h5>
                                 
                                 <p class="article-content">
                                     {{ article.display_content|safe }}
@@ -76,26 +36,26 @@
                                 <p>{{ article.estimated_reading_time }} mins</p>
 
                                 {% if user in article.saves.all %}
-                                    <a href="{% url 'article-save' article.id %}" class="btn btn-sm btn-danger">UnSave</a>
+                                    <a href="{% url 'article-save' article.id %}" class="btn btn-sm">UnSave</a>
                                 {% else %}
-                                    <a href="{% url 'article-save' article.id %}" class="btn btn-sm btn-primary">Save</a>
+                                    <a href="{% url 'article-save' article.id %}" class="btn btn-sm">Save</a>
                                 {% endif %}
                                 {% if user in article.favorites.all %}
-                                    <a href="{% url 'article-favorite' article.id %}" class="btn btn-sm btn-danger">UnFav</a>
+                                    <a href="{% url 'article-favorite' article.id %}" class="btn btn-sm">UnFav</a>
                                 {% else %}
-                                    <a href="{% url 'article-favorite' article.id %}" class="btn btn-sm btn-primary">Fav</a>
+                                    <a href="{% url 'article-favorite' article.id %}" class="btn btn-sm">Fav</a>
                                 {% endif %}
                                 {% if user in article.archived.all %}
-                                    <a href="{% url 'article_archive' article.id %}" class="btn btn-sm btn-danger">Unarchive</a>
+                                    <a href="{% url 'article_archive' article.id %}" class="btn btn-sm">Unarchive</a>
                                 {% else %}
-                                    <a href="{% url 'article_archive' article.id %}" class="btn btn-sm btn-primary">Archive</a>
+                                    <a href="{% url 'article_archive' article.id %}" class="btn btn-sm">Archive</a>
                                 {% endif %}
-                                <!--<a href="{% url 'add_tag' article.id %}" class="btn btn-sm btn-secondary">Add Tag</a>-->
                             </div>
                         </article>
                     </div>
                 {% endfor %}
             </div>
+        </div>
     </div>
 </body>
 </html>

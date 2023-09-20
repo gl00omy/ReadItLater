@@ -1,12 +1,43 @@
 {% extends "paperCapsule/base.html"%}
 {% block content %}
+<div class="row">
+    {% include 'paperCapsule/sidebar_tags.html' %}
     {% if searched %}
-    <p>you search for {{ searched }}</p>
-    <br>
-    {% for article in articles %}
-    {{ article }} - {{ article.date_posted}} <br>
-    {% endfor %}
-    {% else %}
-        <h1>you forgot to search for an article</h1>
-    {% endif %}
+    <div class="col-md-10">
+        <p>You search for "{{ searched }}"</p>
+        <br>
+        {% for article in articles %}
+        <div class="col-md-4 mb-4">
+            <article class="media content-section d-flex flex-column h-100">
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <a class="mr-2" href="#">{{ article.author.first_name }} {{ article.author.last_name }}</a>
+                    </div>
+                    <h5><a class="article-title custom-title" href="{% url 'article-detail' article.id %}">{{ article.title }}</a></h5>
+                    
+                    {% if user in article.saves.all %}
+                        <a href="{% url 'article-save' article.id %}" class="btn btn-sm">UnSave</a>
+                    {% else %}
+                        <a href="{% url 'article-save' article.id %}" class="btn btn-sm">Save</a>
+                    {% endif %}
+                    {% if user in article.favorites.all %}
+                        <a href="{% url 'article-favorite' article.id %}" class="btn btn-sm">UnFav</a>
+                    {% else %}
+                        <a href="{% url 'article-favorite' article.id %}" class="btn btn-sm">Fav</a>
+                    {% endif %}
+                    {% if user in article.archived.all %}
+                        <a href="{% url 'article_unarchive' article.id %}" class="btn btn-sm">Unarchive</a>
+                    {% else %}
+                        <a href="{% url 'article_archive' article.id %}" class="btn btn-sm">Archive</a>
+                    {% endif %}
+                </div>
+            </article>
+        </div>
+        {% endfor %}
+        {% else %}
+            <h1>you forgot to search for an article</h1>
+        {% endif %}
+    </div>
+</div>
+   
 {% endblock content%}

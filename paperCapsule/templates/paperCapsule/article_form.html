@@ -1,4 +1,4 @@
-{% extends "paperCapsule/base.html"%}
+{% extends "paperCapsule/base.html" %}
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
@@ -11,20 +11,24 @@
     <link rel="stylesheet" type="text/css" href="{% static 'paperCapsule/create_forms.css' %}">
 </head>
 <body>
-    
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8"> <!-- Adjust the column width as needed -->
+                <div class="form-group">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <fieldset class="form-group">
+                            {{ form.as_p }}
+                            {{ form.media }}
+                        </fieldset>
+                        <div class="form-group text-center">
+                            <button class="btn btn-outline-info" type="submit">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
-    <div class="form-group">
-        <form action="" method="POST">
-            {% csrf_token %}
-            <fieldset class="form-group">
-              
-                {{ form.as_p }}
-                {{ form.media }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Create</button>
-            </div>
-        </form>
-    </div>
-{% endblock content%}
+{% endblock content %}

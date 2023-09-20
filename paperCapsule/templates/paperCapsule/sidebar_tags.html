@@ -1,7 +1,9 @@
+{% load static%}
+<link rel="stylesheet" type="text/css" href="{% static 'paperCapsule/main.css'%}">
 <div class="col-md-2">
     <ul class="list-group">
         <!-- Sidebar content here -->
-        <li class="list-group-item list-group-item-light"><a href="{% url 'paperCapsule-home' %}">Home</a></li>
+        <li class="list-group-item "><a href="{% url 'paperCapsule-home' %}" >Home</a></li>
         {% if user.is_authenticated %}
         <li class="list-group-item list-group-item-light"><a href="{% url 'saved_articles' user.id %}">Saves</a></li>
         <br>

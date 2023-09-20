@@ -1,30 +1,41 @@
 {% extends "paperCapsule/base.html" %}
 {% block content %}
-    <div class="article-metadata">
-        <a class="mr-2" href="#">{{ object.author.first_name }} {{ object.author.last_name }}</a>
-        <small class="text-muted">{{ object.date_posted }}</small>
-        <p>Tags: {% for tag in object.tags.all %}
-            {{ tag.name }}
-        {% endfor %}
-        </p>
-        {% if object.author == user %}
-        <div>
-            <a href="{% url 'article-update' object.id %}" class="btn-secondary btn-sm mt-1 mb-1">Update</a>
-            <a href="{% url 'article-delete' object.id %}" class="btn-danger btn-sm mt-1 mb-1">Delete</a>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="article-metadata">
+                <h1 class="text-center font-weight-bold">{{ object.title }}</h1>
+                <br>
+                <a class="mr-2" href="#">{{ object.author.first_name }} {{ object.author.last_name }}</a>
+                <small class="text-muted">{{ object.date_posted }}</small>
+                {% for tag in object.tags.all %}
+                <a href="/" class="tag-link">{{ tag.name }}</a>
+                {% endfor %}
+            
+                {% if object.author == user %}
+                <br>
+                <br>
+                <div class="col-md-12 text-md-right">
+                    <a href="{% url 'article-update' object.id %}" class="btn-sm">Update</a>
+                    <a href="{% url 'article-delete' object.id %}" class="btn-sm mt-1 mb-1">Delete</a>
+                </div>
+                
+                {% endif %}
+            </div>
+
+            <!-- Add the following buttons for text size adjustment -->
+            <!--<button onclick="adjustTextSize(1)">Increase Text Size</button>
+            <button onclick="adjustTextSize(-1)">Decrease Text Size</button>-->
+
+            <!-- Add the following buttons for color mode change -->
+            <!-- <button onclick="changeColorMode('dark-mode')">Dark Mode</button>
+            <button onclick="changeColorMode('light-mode')">Light Mode</button>
+            <button onclick="changeColorMode('sepia-mode')">Sepia Mode</button>-->
+
+            <!--<p>Estimated Reading Time: {{ estimated_reading_time }} minutes</p>-->
+
+            <p class="article-content">{{ object.content|safe }}</p>
         </div>
-        {% endif %}
     </div>
-
-    <!-- Add the following buttons for text size adjustment -->
-    <!--<button onclick="adjustTextSize(1)">Increase Text Size</button>
-    <button onclick="adjustTextSize(-1)">Decrease Text Size</button>-->
-
-    <!-- Add the following buttons for color mode change -->
-    <!-- <button onclick="changeColorMode('dark-mode')">Dark Mode</button>
-    <button onclick="changeColorMode('light-mode')">Light Mode</button>
-    <button onclick="changeColorMode('sepia-mode')">Sepia Mode</button>-->
-
-    <!--<p>Estimated Reading Time: {{ estimated_reading_time }} minutes</p>-->
-
-    <p class="article-content">{{ object.content|safe }}</p>
+</div>
 {% endblock content %}

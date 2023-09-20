@@ -8,7 +8,6 @@ from django.views.generic import (
 )
 from . models import Article
 from taggit.models import Tag
-from . forms import TagForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 import math
@@ -23,26 +22,18 @@ def home(request):
     saved_articles = articles.filter(saves=request.user)
     unsaved_articles = articles.exclude(saves=request.user)
     tags = Tag.objects.all()
-    max_title_chars = 50  # Adjust this to your desired character limit for the title
+    max_title_chars = 50 
     max_content_chars = 200 
     
-
-    # Get the tags associated with unsaved articles
-    unsaved_articles_tags = Tag.objects.filter(article__in=unsaved_articles).distinct()
 
     for article in articles:
         article.display_title = Truncator(article.title).chars(max_title_chars)
         article.display_content = Truncator(article.content).chars(max_content_chars)
 
-
-
     context = {
         'articles': articles,
-        #'last_three_articles': last_three_articles,
-        #'saved_articles': saved_articles,
-        #'tags': tags,
         'unsaved_articles': unsaved_articles,
-        'unsaved_articles_tags': unsaved_articles_tags,
+        'tags': tags,
     }
     return render(request, 'paperCapsule/home.html', context)
 
@@ -55,13 +46,12 @@ class ArticleListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        max_chars = 200  # Adjust the number of characters you want to show
+        max_chars = 125
 
         for article in context['articles']:
-            # Truncate the article content
+            #TRUNCATE TITLE!!!!!!!!!!!
             article.display_content = Truncator(article.content).chars(max_chars)
 
-            # Add a flag to indicate if the article content is truncated or not
             article.is_truncated = len(article.content) > max_chars
 
         # Get the tags associated with unsaved articles
@@ -308,19 +298,6 @@ def search_articles(request):
     else:
         return render(request, 'paperCapsule/search_articles.html')
 
-
-
-
-@login_required
-def add_tag_to_article(request, article_id):
-    article = get_object_or_404(Article, pk=article_id)
-
-    if request.method == 'POST':
-        tag_name = request.POST.get('tag_name')
-        if tag_name:
-            article.tags.add(tag_name)
-
-    return render(request, 'paperCapsule/add_tag.html', {'article': article})
 
 def all_tags(request):
     tags = Tag.objects.all()
